@@ -182,3 +182,12 @@
         Sonra addDebt çağıranda bu share dəyərini verirsən.    
 
         
+# “Group”
+    Real həyatda bu kimi situasiyalar olur:
+        Dostlarla səfərə gedirsən – yol, otel, yemək xərcləri olur.
+        Eyni evdə roommate-lərlə qalırsan – kirayə, işıq, qaz, internet.
+        İş yoldaşlarınla bir layihə və ya şənlik üçün pul yığırsan.
+    Bu hər bir situasiyanı biz sistemdə “group” kimi saxlayırıq:
+        “Quba səfəri”
+        “Yasamal kirayə evi”
+        “Office pizza cüməsi”
