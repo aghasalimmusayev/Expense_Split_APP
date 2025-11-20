@@ -29,4 +29,29 @@ export function listSettlementsForUser(userId: string): Settlement[] {
     );
 }
 
+// ID-yə görə settlement tap
+export function getSettlementById(id: string): Settlement | undefined {
+    return settlements.get(id);
+}
+
+// Settlement-i update et
+export function changeSettlement(id: string, data: Partial<Pick<Settlement, "groupId" | "fromUser" | "toUser" | "amount">>):
+    Settlement | undefined {
+
+    const existing = settlements.get(id);
+    if (!existing) return undefined;
+    const updated: Settlement = {
+        ...existing,
+        ...data,
+        createdAt: new Date().toISOString(),
+    };
+    settlements.set(id, updated);
+    return updated;
+}
 export { settlements };
+
+// Settlement-i silmek
+export function removeSettlement(id: string): Settlement[] {
+    return Array.from(settlements.values()).filter(set => set.id !== id)
+}
+
