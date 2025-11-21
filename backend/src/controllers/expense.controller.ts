@@ -33,13 +33,13 @@ export function getExpenseId(req: Request, res: Response) {
     }
 }
 
-export function getListExpenseForUser(req: Request, res: Response) {
+export function getListExpenseInGroup(req: Request, res: Response) {
     try {
         const { userId } = req.query
         const { groupId } = req.params
         let expense;
         if (userId && typeof userId === 'string') expense = listExpensesForUserInGroup(userId, groupId)
-        else expense = getExpenseById(groupId)
+        else expense = listExpensesByGroupId(groupId)
         return res.status(200).json(expense)
     }
     catch (err) {

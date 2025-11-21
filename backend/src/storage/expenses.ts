@@ -10,7 +10,6 @@ export function addExpense(input: CreateExpenseInput): Expense {
         ...input,
         createdAt: new Date().toISOString(),
     };
-
     expenses.set(expense.id, expense);
     return expense;
 }

@@ -5,6 +5,10 @@ import pinoHttp from 'pino-http';
 import { config } from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import groupRoute from './routes/group.routes';
+import expenseRoute from './routes/expense.routes';
+import settlementRoute from './routes/settlement.routes';
+import staticRoute from './routes/static.route';
 
 config();
 
@@ -24,14 +28,17 @@ app.use(pinoHttp({ logger }));
 // app.use(express.static(path.join(__dirname, '../../frontend')));
 
 // API Routes buraya əlavə edin
-// Məsələn: app.use('/api', yourRoutes);
+app.use('/api', groupRoute);
+app.use('/api', expenseRoute);
+app.use('/api', settlementRoute);
+app.use('/api', staticRoute);
 
-// Serve frontend for all other routes
+//! Serve frontend for all other routes(helelik commente aldiq)
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, '../../frontend/index.html'));
 // });
 
-app.get('/', (req, res) => { // muveqqeti
+app.get('/', (req, res) => { //! muveqqeti test ucun
   res.send("YENI_APP")
 })
 

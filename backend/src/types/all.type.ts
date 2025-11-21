@@ -12,7 +12,7 @@ export interface Expense {
     amount: number;
     paidBy: string; // user ID
     splitBetween: string[]; // user IDs
-    splits?: { [userId: string]: number }; // for exact/percentage
+    splits?: { [userId: string]: number };
     category: string;
     createdAt: string;
 }
@@ -23,7 +23,7 @@ export interface CreateExpenseInput {
     amount: number;
     paidBy: string;
     splitBetween: string[]; // user IDs
-    splits?: { [userId: string]: number }; // for exact/percentage
+    splits?: { [userId: string]: number };
     category: string;
 };
 

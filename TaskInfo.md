@@ -10,11 +10,11 @@ Port: `http://localhost:3014`
 
 ## Xüsusiyyətlər
 
-- 💳 Xərc əlavə et
-- 👥 Qrup üzvləri
-- 💰 Avtomatik balans hesablama
-- ✅ Settle up (borcları bağla)
-- 📊 Xərc statistikası
-- 💸 Split methods (equal, percentage, exact)
++ 💳 Xərc əlavə et
++ 👥 Qrup üzvləri
++ 💰 Avtomatik balans hesablama - yazilmalidir
++ ✅ Settle up (borcları bağla)
++ 📊 Xərc statistikası
++ 💸 Split methods (equal, percentage, exact)
 
 Ətraflı TASKS.md-də.

@@ -31,13 +31,13 @@ export function getSettlementsByGroup(req: Request, res: Response) {
     }
 }
 
-export function getSettlementsForUserController(req: Request, res: Response) {
+export function getSettlementsForUser(req: Request, res: Response) {
     try {
         const { userId } = req.params;
         const settlements = listSettlementsForUser(userId);
         return res.status(200).json(settlements);
     } catch (err) {
-        console.error("getSettlementsForUserController error:", err);
+        console.error("getSettlementsForUser error:", err);
         return res.status(500).json({ message: "Internal server error" });
     }
 }
