@@ -1,9 +1,9 @@
 import { calculateGroupBalances } from "../storage/balances";
 import { Request, Response } from "express";
-export function getGroupBalance(req: Request, res: Response) {
+export async function getGroupBalance(req: Request, res: Response) {
     try {
         const { groupId } = req.params
-        const balance = calculateGroupBalances(groupId)
+        const balance = await calculateGroupBalances(groupId)
         return res.status(200).json(balance)
     }
     catch (err) {

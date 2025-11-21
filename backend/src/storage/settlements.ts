@@ -1,57 +1,65 @@
 import { randomUUID } from 'crypto';
 import type { Settlement } from '../types/all.type';
-
-const settlements = new Map<string, Settlement>();
+import { readDB, writeDB } from '../data';
 
 type CreateSettlementInput = Omit<Settlement, 'id' | 'createdAt'>;
 
-export function addSettlement(input: CreateSettlementInput): Settlement {
+export async function addSettlement(input: CreateSettlementInput): Promise<Settlement> {
+    const db = await readDB()
     const settlement: Settlement = {
         id: randomUUID(),
         ...input,
         createdAt: new Date().toISOString(),
     };
-    settlements.set(settlement.id, settlement);
+    db.settlements.push(settlement)
+    await writeDB(db)
     return settlement;
 }
 
 // Qrupa görə hesablaşmalar
-export function listSettlementsByGroupId(groupId: string): Settlement[] {
-    return Array.from(settlements.values()).filter(
-        s => s.groupId === groupId
-    );
+export async function listSettlementsByGroupId(groupId: string): Promise<Settlement[]> {
+    const db = await readDB()
+    return db.settlements.filter(s => s.groupId === groupId);
 }
 
 // Müəyyən user üçün (kimdən/kimə) hesablaşmalar
-export function listSettlementsForUser(userId: string): Settlement[] {
-    return Array.from(settlements.values()).filter(
-        s => s.fromUser === userId || s.toUser === userId
-    );
+export async function listSettlementsForUser(userId: string): Promise<Settlement[]> {
+    const db = await readDB()
+    return db.settlements.filter(s => s.fromUser === userId || s.toUser === userId);
 }
 
 // ID-yə görə settlement tap
-export function getSettlementById(id: string): Settlement | undefined {
-    return settlements.get(id);
+export async function getSettlementById(id: string): Promise<Settlement | undefined> {
+    const db = await readDB()
+    const settlement = db.settlements.find(s => s.id === id)
+    return settlement
 }
 
 // Settlement-i update et
-export function changeSettlement(id: string, data: Partial<Pick<Settlement, "groupId" | "fromUser" | "toUser" | "amount">>):
-    Settlement | undefined {
+export async function changeSettlement(id: string, data: Partial<Pick<Settlement, "groupId" | "fromUser" | "toUser" | "amount">>):
+    Promise<Settlement | undefined> {
 
-    const existing = settlements.get(id);
+    const db = await readDB()
+    const index = db.settlements.findIndex(s => s.id === id)
+    const existing = db.settlements[index]
     if (!existing) return undefined;
     const updated: Settlement = {
         ...existing,
         ...data,
         createdAt: new Date().toISOString(),
     };
-    settlements.set(id, updated);
+    db.settlements[index] = updated
+    await writeDB(db)
     return updated;
 }
-export { settlements };
 
 // Settlement-i silmek
-export function removeSettlement(id: string): Settlement[] {
-    return Array.from(settlements.values()).filter(set => set.id !== id)
+export async function removeSettlement(id: string): Promise<Boolean> {
+    const db = await readDB()
+    const before = db.settlements.length
+    db.settlements = db.settlements.filter(set => set.id !== id)
+    if (db.settlements.length === before) return false
+    await writeDB(db)
+    return true
 }
 

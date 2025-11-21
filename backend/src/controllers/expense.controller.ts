@@ -3,10 +3,10 @@ import { ZodError } from "zod";
 import { addExpense, getExpenseById, listExpensesByGroupId, listExpensesForUserInGroup, removeExpense } from "../storage";
 import { CreateExpenseSchema } from "../validators";
 
-export function createExpense(req: Request, res: Response) {
+export async function createExpense(req: Request, res: Response) {
     try {
         const data = CreateExpenseSchema.parse(req.body)
-        const expense = addExpense(data)
+        const expense = await addExpense(data)
         return res.status(201).json(expense)
     } catch (err) {
         if (err instanceof ZodError) {
@@ -20,10 +20,10 @@ export function createExpense(req: Request, res: Response) {
     }
 }
 
-export function getExpenseId(req: Request, res: Response) {
+export async function getExpenseId(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const expense = getExpenseById(id)
+        const expense = await getExpenseById(id)
         if (!expense) return res.status(404).json({ message: 'Expense not found' })
         return res.status(200).json(expense)
     }
@@ -33,13 +33,13 @@ export function getExpenseId(req: Request, res: Response) {
     }
 }
 
-export function getListExpenseInGroup(req: Request, res: Response) {
+export async function getListExpenseInGroup(req: Request, res: Response) {
     try {
         const { userId } = req.query
         const { groupId } = req.params
         let expense;
-        if (userId && typeof userId === 'string') expense = listExpensesForUserInGroup(userId, groupId)
-        else expense = listExpensesByGroupId(groupId)
+        if (userId && typeof userId === 'string') expense = await listExpensesForUserInGroup(groupId, userId)
+        else expense = await listExpensesByGroupId(groupId)
         return res.status(200).json(expense)
     }
     catch (err) {
@@ -48,10 +48,10 @@ export function getListExpenseInGroup(req: Request, res: Response) {
     }
 }
 
-export function deleteExpense(req: Request, res: Response) {
+export async function deleteExpense(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const deleted = removeExpense(id)
+        const deleted = await removeExpense(id)
         if (!deleted) return res.status(404).json({ message: 'Expense not found' })
         return res.status(204).send()
     }

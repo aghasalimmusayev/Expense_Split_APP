@@ -3,10 +3,10 @@ import { ZodError } from "zod";
 import { addGroup, getGroupById, listGroups, removeGroup, updateGroup } from "../storage";
 import { CreateGroupSchema, UpdateGroupSchema } from "../validators";
 
-export function createGroup(req: Request, res: Response) {
+export async function createGroup(req: Request, res: Response) {
     try {
         const data = CreateGroupSchema.parse(req.body)
-        const group = addGroup(data.name, data.members)
+        const group = await addGroup(data.name, data.members)
         return res.status(201).json(group)
     }
     catch (err) {
@@ -21,9 +21,9 @@ export function createGroup(req: Request, res: Response) {
     }
 }
 
-export function getGroups(req: Request, res: Response) {
+export async function getGroups(req: Request, res: Response) {
     try {
-        const groups = listGroups()
+        const groups = await listGroups()
         return res.status(200).json(groups)
     }
     catch (err) {
@@ -32,10 +32,10 @@ export function getGroups(req: Request, res: Response) {
     }
 }
 
-export function getGroupId(req: Request, res: Response) {
+export async function getGroupId(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const group = getGroupById(id)
+        const group = await getGroupById(id)
         if (!group) return res.status(404).json({ message: 'Group not found' })
         return res.status(200).json(group)
     }
@@ -45,11 +45,11 @@ export function getGroupId(req: Request, res: Response) {
     }
 }
 
-export function updateGroupByZod(req: Request, res: Response) {
+export async function updateGroupByZod(req: Request, res: Response) {
     try {
         const { id } = req.params
         const data = UpdateGroupSchema.parse(req.body)
-        const updated = updateGroup(id, data)
+        const updated = await updateGroup(id, data)
         if (!updated) return res.status(404).json({ message: 'Group not found' })
         return res.status(200).json(updated)
     }
@@ -65,10 +65,10 @@ export function updateGroupByZod(req: Request, res: Response) {
     }
 }
 
-export function deleteGroup(req: Request, res: Response) {
+export async function deleteGroup(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const deleted = removeGroup(id)
+        const deleted = await removeGroup(id)
         if (!deleted) return res.status(404).json({ message: "Group not found" })
         return res.status(204).send()
     }

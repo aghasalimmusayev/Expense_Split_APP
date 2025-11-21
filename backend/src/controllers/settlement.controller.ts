@@ -3,10 +3,10 @@ import { ZodError } from "zod";
 import { addSettlement, changeSettlement, getSettlementById, listSettlementsByGroupId, listSettlementsForUser, removeSettlement } from "../storage";
 import { CreateSettlementSchema, updateSettlementSchema } from "../validators";
 
-export function createSettlement(req: Request, res: Response) {
+export async function createSettlement(req: Request, res: Response) {
     try {
         const data = CreateSettlementSchema.parse(req.body);
-        const settlement = addSettlement(data);
+        const settlement = await addSettlement(data);
         return res.status(201).json(settlement);
     } catch (err) {
         if (err instanceof ZodError) {
@@ -20,10 +20,10 @@ export function createSettlement(req: Request, res: Response) {
     }
 }
 
-export function getSettlementsByGroup(req: Request, res: Response) {
+export async function getSettlementsByGroup(req: Request, res: Response) {
     try {
         const { groupId } = req.params;
-        const settlements = listSettlementsByGroupId(groupId);
+        const settlements = await listSettlementsByGroupId(groupId);
         return res.status(200).json(settlements);
     } catch (err) {
         console.error("getSettlementsByGroup error:", err);
@@ -31,10 +31,10 @@ export function getSettlementsByGroup(req: Request, res: Response) {
     }
 }
 
-export function getSettlementsForUser(req: Request, res: Response) {
+export async function getSettlementsForUser(req: Request, res: Response) {
     try {
         const { userId } = req.params;
-        const settlements = listSettlementsForUser(userId);
+        const settlements = await listSettlementsForUser(userId);
         return res.status(200).json(settlements);
     } catch (err) {
         console.error("getSettlementsForUser error:", err);
@@ -42,10 +42,10 @@ export function getSettlementsForUser(req: Request, res: Response) {
     }
 }
 
-export function getSettlementId(req: Request, res: Response) {
+export async function getSettlementId(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const settlement = getSettlementById(id)
+        const settlement = await getSettlementById(id)
         if (!settlement) return res.status(404).json({ message: 'Settlement not found' })
         return res.status(200).json(settlement)
     }
@@ -55,11 +55,11 @@ export function getSettlementId(req: Request, res: Response) {
     }
 }
 
-export function updateSettlement(req: Request, res: Response) {
+export async function updateSettlement(req: Request, res: Response) {
     try {
         const { id } = req.params
         const data = updateSettlementSchema.parse(req.body)
-        const updated = changeSettlement(id, data)
+        const updated = await changeSettlement(id, data)
         if (!updated) return res.status(404).json({ message: 'Settlement not found' })
         return res.status(200).json(updated)
     }
@@ -75,10 +75,10 @@ export function updateSettlement(req: Request, res: Response) {
     }
 }
 
-export function deleteSettlement(req: Request, res: Response) {
+export async function deleteSettlement(req: Request, res: Response) {
     try {
         const { id } = req.params
-        const deleted = removeSettlement(id)
+        const deleted = await removeSettlement(id)
         if (!deleted) return res.status(404).json({ message: 'Settlement not found' })
         return res.status(204).send()
     }

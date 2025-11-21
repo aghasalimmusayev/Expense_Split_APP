@@ -1,0 +1,120 @@
+{
+    "users": [
+        {
+            "id": "user-001",
+            "name": "Aga",
+            "email": "aga@mail.com",
+            "createdAt": "2025-11-01T10:00:00.000Z"
+        },
+        {
+            "id": "user-002",
+            "name": "Leyla",
+            "email": "leyla@mail.com",
+            "createdAt": "2025-11-01T10:05:00.000Z"
+        },
+        {
+            "id": "user-003",
+            "name": "Mehdi",
+            "email": "mehdi@mail.com",
+            "createdAt": "2025-11-01T10:10:00.000Z"
+        }
+    ],
+    "groups": [
+        {
+            "id": "group-001",
+            "name": "Ev xərcləri",
+            "members": [
+                "user-001",
+                "user-002",
+                "user-003"
+            ],
+            "createdAt": "2025-11-02T09:00:00.000Z"
+        },
+        {
+            "id": "group-002",
+            "name": "Dostlarla səyahət",
+            "members": [
+                "user-001",
+                "user-002"
+            ],
+            "createdAt": "2025-11-03T12:00:00.000Z"
+        },
+        {
+            "id": "group-003",
+            "name": "Ofis naharı",
+            "members": [
+                "user-002",
+                "user-003"
+            ],
+            "createdAt": "2025-11-04T08:30:00.000Z"
+        }
+    ],
+    "expenses": [
+        {
+            "id": "exp-001",
+            "groupId": "group-001",
+            "description": "Market alış-verişi",
+            "amount": 90,
+            "paidBy": "user-001",
+            "splitBetween": [
+                "user-001",
+                "user-002",
+                "user-003"
+            ],
+            "category": "grocery",
+            "createdAt": "2025-11-05T18:20:00.000Z"
+        },
+        {
+            "id": "exp-002",
+            "groupId": "group-002",
+            "description": "Otel ödənişi",
+            "amount": 200,
+            "paidBy": "user-002",
+            "splitBetween": [
+                "user-001",
+                "user-002"
+            ],
+            "category": "travel",
+            "createdAt": "2025-11-06T14:00:00.000Z"
+        },
+        {
+            "id": "exp-003",
+            "groupId": "group-003",
+            "description": "Pizza sifarişi",
+            "amount": 40,
+            "paidBy": "user-003",
+            "splitBetween": [
+                "user-002",
+                "user-003"
+            ],
+            "category": "food",
+            "createdAt": "2025-11-07T13:15:00.000Z"
+        }
+    ],
+    "settlements": [
+        {
+            "id": "set-001",
+            "groupId": "group-001",
+            "fromUser": "user-002",
+            "toUser": "user-001",
+            "amount": 30,
+            "createdAt": "2025-11-08T11:00:00.000Z"
+        },
+        {
+            "id": "set-002",
+            "groupId": "group-002",
+            "fromUser": "user-001",
+            "toUser": "user-002",
+            "amount": 100,
+            "createdAt": "2025-11-08T12:30:00.000Z"
+        },
+        {
+            "id": "set-003",
+            "groupId": "group-003",
+            "fromUser": "user-002",
+            "toUser": "user-003",
+            "amount": 20,
+            "createdAt": "2025-11-09T09:45:00.000Z"
+        }
+    ]
+}

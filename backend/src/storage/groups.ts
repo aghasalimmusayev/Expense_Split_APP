@@ -1,49 +1,55 @@
 import { randomUUID } from "crypto";
 import { Group } from "../types";
-
-const groups = new Map<string, Group>();
+import { readDB, writeDB } from "../data";
 
 // Yeni qrup yarat
-export function addGroup(name: string, members: string[]): Group {
+export async function addGroup(name: string, members: string[]): Promise<Group> {
     const group: Group = {
         id: randomUUID(),
         name,
         members,
         createdAt: new Date().toISOString(),
     };
-
-    groups.set(group.id, group);
+    const db = await readDB()
+    db.groups.push(group)
+    await writeDB(db)
     return group;
 }
 
 // ID ilə qrup tap
-export function getGroupById(id: string): Group | undefined {
-    return groups.get(id);
+export async function getGroupById(id: string): Promise<Group | undefined> {
+    const db = await readDB()
+    return db.groups.find(gr => gr.id === id)
 }
 
 // Bütün qruplar
-export function listGroups(): Group[] {
-    return Array.from(groups.values());
+export async function listGroups(): Promise<Group[]> {
+    const db = await readDB()
+    return db.groups
 }
 
 // Qrupu update et (adı və üzvləri dəyişmək üçün)
-export function updateGroup(id: string, data: Partial<Pick<Group, 'name' | 'members'>>): Group | undefined {
-    const existing = groups.get(id);
+export async function updateGroup(id: string, data: Partial<Pick<Group, 'name' | 'members'>>): Promise<Group | undefined> {
+    const db = await readDB()
+    const index = db.groups.findIndex(g => g.id === id)
+    const existing = db.groups[index]
     if (!existing) return undefined;
     const updated: Group = {
         ...existing,
         ...data,
     };
-    groups.set(id, updated);
+    db.groups[index] = updated
+    await writeDB(db)
     return updated;
 }
 
 // Qrupu sil
-export function removeGroup(id: string): boolean {
-    return groups.delete(id);
+export async function removeGroup(id: string): Promise<boolean> {
+    const db = await readDB()
+    db.groups = db.groups.filter(g => g.id !== id);
+    await writeDB(db)
+    return true
 }
 
-// Əgər hansısa yerdə lazım olsa xam Map-i də export edə bilərik
-export { groups };
 
 

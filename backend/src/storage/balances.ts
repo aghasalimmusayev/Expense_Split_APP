@@ -1,10 +1,9 @@
-import { expenses } from "./expenses";
-import { settlements } from "./settlements";
-import { groups } from "./groups";
 import type { Balance } from "../types/all.type";
+import { readDB, writeDB } from "../data";
 
-export function calculateGroupBalances(groupId: string): Balance[] {
-    const group = groups.get(groupId);
+export async function calculateGroupBalances(groupId: string): Promise<Balance[]> {
+    const db = await readDB()
+    const group = db.groups.find(g => g.id === groupId)
     if (!group) return [];
     const members = group.members;
     // Boş balans
@@ -19,8 +18,7 @@ export function calculateGroupBalances(groupId: string): Balance[] {
         return balances.find(b => b.userId === userId)!;
     }
     // EXPENSES → borc yaratmaq
-    const groupExpenses = Array.from(expenses.values())
-        .filter(e => e.groupId === groupId);
+    const groupExpenses = db.expenses.filter(e => e.groupId === groupId);
     for (const e of groupExpenses) {
         const participants = e.splitBetween?.length > 0
             ? e.splitBetween
@@ -37,8 +35,7 @@ export function calculateGroupBalances(groupId: string): Balance[] {
         }
     }
     // SETTLEMENTS → borcu azaltmaq / bağlamaq
-    const groupSettlements = Array.from(settlements.values())
-        .filter(s => s.groupId === groupId);
+    const groupSettlements = db.settlements.filter(s => s.groupId === groupId);
     for (const s of groupSettlements) {
         const payer = getBalance(s.fromUser);
         const receiver = getBalance(s.toUser);

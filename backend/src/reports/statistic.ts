@@ -1,9 +1,10 @@
+import { readDB } from "../data";
 import { calculateGroupBalances } from "../storage/balances";
-import { expenses } from "../storage/expenses";
 
-export function calculateStats(groupId: string) {
+export async function calculateStats(groupId: string) {
+    const db = await readDB()
     // Qrupa aid bütün xərclər
-    const groupExpenses = Array.from(expenses.values()).filter(e => e.groupId === groupId);
+    const groupExpenses = db.expenses.filter(e => e.groupId === groupId);
     // Ümumi xərclənən məbləğ
     const totalExpenses = groupExpenses.reduce((acc, e) => acc + e.amount, 0);
     // Hər user nə qədər pul ödəyib
@@ -17,7 +18,7 @@ export function calculateStats(groupId: string) {
     if (Object.keys(totalPaidPerUser).length > 0) {
         mostSpender = Object.entries(totalPaidPerUser).sort((a, b) => b[1] - a[1])[0]; // nəticə: ["userId", amount]
     }
-    const balances = calculateGroupBalances(groupId);
+    const balances = await calculateGroupBalances(groupId);
     return {
         totalExpenses,
         totalPaidPerUser,

@@ -1,39 +1,46 @@
 import { randomUUID } from 'crypto';
 import type { Expense, CreateExpenseInput } from '../types/all.type';
-
-const expenses = new Map<string, Expense>();
+import { readDB, writeDB } from '../data';
 
 // Yeni xərc əlavə et
-export function addExpense(input: CreateExpenseInput): Expense {
+export async function addExpense(input: CreateExpenseInput): Promise<Expense> {
+    const db = await readDB()
     const expense: Expense = {
         id: randomUUID(),
         ...input,
         createdAt: new Date().toISOString(),
     };
-    expenses.set(expense.id, expense);
+    db.expenses.push(expense)
+    await writeDB(db)
     return expense;
 }
 
 // ID ilə xərc tap
-export function getExpenseById(id: string): Expense | undefined {
-    return expenses.get(id);
+export async function getExpenseById(id: string): Promise<Expense | undefined> {
+    const db = await readDB()
+    const expense = db.expenses.find(g => g.id === id)
+    return expense;
 }
 
-// Qrupa görə xərcləri siyahıla
-export function listExpensesByGroupId(groupId: string): Expense[] {
-    return Array.from(expenses.values()).filter(e => e.groupId === groupId);
+// Qrupa görə xərcləri cixart
+export async function listExpensesByGroupId(groupId: string): Promise<Expense[]> {
+    const db = await readDB()
+    return db.expenses.filter(e => e.groupId === groupId);
 }
 
-// İstəsən: müəyyən user-in müəyyən qrupdakı xərcləri
-export function listExpensesForUserInGroup(groupId: string, userId: string): Expense[] {
-    return Array.from(expenses.values()).filter(
-        e => e.groupId === groupId && e.paidBy === userId
-    );
+// Müəyyən user-in müəyyən qrupdakı xərcləri
+export async function listExpensesForUserInGroup(groupId: string, userId: string): Promise<Expense[]> {
+    const db = await readDB()
+    return db.expenses.filter(e => e.groupId === groupId && e.paidBy === userId);
 }
 
 // Xərc sil
-export function removeExpense(id: string): boolean {
-    return expenses.delete(id);
+export async function removeExpense(id: string): Promise<boolean> {
+    const db = await readDB()
+    const before = db.expenses.length
+    db.expenses = db.expenses.filter(g => g.id !== id)
+    if (db.expenses.length === before) return false;
+    await writeDB(db)
+    return true
 }
 
-export { expenses };

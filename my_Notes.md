@@ -54,3 +54,5 @@ src/storage/:
     expenses.ts – const expenses = new Map<string, Expense>()
     settlements.ts – const settlements = new Map<string, Settlement>()
         Əlavə köməkçi funksiyalar: addGroup, addExpense, listExpensesByGroupId və s.
+
+// "dev": "nodemon --watch src --exec ts-node -r tsconfig-paths/register src/server.ts",
