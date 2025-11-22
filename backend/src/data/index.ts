@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { Group, Expense, Settlement } from '../types/all.type'
+import type { Group, Expense, Settlement } from '../types/all.type.js' //! burada xeta var
 
 const dbPath = path.join(process.cwd(), "src", "data", "db.json");
 

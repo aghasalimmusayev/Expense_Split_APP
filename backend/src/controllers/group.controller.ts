@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
-import { addGroup, getGroupById, listGroups, removeGroup, updateGroup } from "../storage";
-import { CreateGroupSchema, UpdateGroupSchema } from "../validators";
+import { addGroup, getGroupById, listGroups, removeGroup, updateGroup } from "@storage/groups.js";
+import { CreateGroupSchema, UpdateGroupSchema } from "@validators/group.validator.js";
 
 export async function createGroup(req: Request, res: Response) {
     try {
@@ -16,7 +16,7 @@ export async function createGroup(req: Request, res: Response) {
                 errors: err.errors
             })
         }
-        console.log('CreateGroup error: ' + err);
+        req.log.error({ err }, 'CreateGroup error');
         return res.status(500).json({ message: "Internal server Error" })
     }
 }
@@ -27,7 +27,7 @@ export async function getGroups(req: Request, res: Response) {
         return res.status(200).json(groups)
     }
     catch (err) {
-        console.error('GetGroups error: ' + err);
+        req.log.error({ err }, 'GetGroups error');
         return res.status(500).json({ message: "Internal server Error" })
     }
 }
@@ -40,7 +40,7 @@ export async function getGroupId(req: Request, res: Response) {
         return res.status(200).json(group)
     }
     catch (err) {
-        console.error('GetGroupId error: ' + err);
+        req.log.error({ err }, 'GetGroupId error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }
@@ -60,7 +60,7 @@ export async function updateGroupByZod(req: Request, res: Response) {
                 errors: err.errors
             })
         }
-        console.error('UpdateGropu Error: ' + err);
+        req.log.error({ err }, 'UpdateGropu Error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }
@@ -73,7 +73,7 @@ export async function deleteGroup(req: Request, res: Response) {
         return res.status(204).send()
     }
     catch (err) {
-        console.error('DeleteGroup Error: ' + err);
+        req.log.error({ err }, 'DeleteGroup Error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }

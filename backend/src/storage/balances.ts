@@ -1,5 +1,5 @@
 import type { Balance } from "../types/all.type";
-import { readDB, writeDB } from "../data";
+import { readDB } from "@data/index";
 
 export async function calculateGroupBalances(groupId: string): Promise<Balance[]> {
     const db = await readDB()

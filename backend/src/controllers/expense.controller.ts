@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
-import { addExpense, getExpenseById, listExpensesByGroupId, listExpensesForUserInGroup, removeExpense } from "../storage";
-import { CreateExpenseSchema } from "../validators";
+import { addExpense, getExpenseById, listExpensesByGroupId, listExpensesForUserInGroup, removeExpense } from "@storage/expenses.js";
+import { CreateExpenseSchema } from "@validators/expense.validator.js";
 
 export async function createExpense(req: Request, res: Response) {
     try {
@@ -15,7 +15,7 @@ export async function createExpense(req: Request, res: Response) {
                 errors: err.errors
             })
         }
-        console.error('Internal Error: ' + err);
+        req.log.error({ err }, 'Internal Error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }
@@ -28,7 +28,7 @@ export async function getExpenseId(req: Request, res: Response) {
         return res.status(200).json(expense)
     }
     catch (err) {
-        console.error('GetExpenseById Error: ' + err);
+        req.log.error({ err }, 'GetExpenseById Error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }
@@ -37,13 +37,13 @@ export async function getListExpenseInGroup(req: Request, res: Response) {
     try {
         const { userId } = req.query
         const { groupId } = req.params
-        let expense;
-        if (userId && typeof userId === 'string') expense = await listExpensesForUserInGroup(groupId, userId)
-        else expense = await listExpensesByGroupId(groupId)
-        return res.status(200).json(expense)
+        let expenses;
+        if (userId && typeof userId === 'string') expenses = await listExpensesForUserInGroup(groupId, userId)
+        else expenses = await listExpensesByGroupId(groupId)
+        return res.status(200).json(expenses)
     }
     catch (err) {
-        console.error('GetExpenseGroup Error: ' + err);
+        req.log.error({ err }, 'GetExpenseByGroupId Error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }
@@ -56,7 +56,7 @@ export async function deleteExpense(req: Request, res: Response) {
         return res.status(204).send()
     }
     catch (err) {
-        console.error('DeleteExpense Error: ' + err);
+        req.log.error({ err }, 'DeleteExpense Error');
         return res.status(500).json({ message: 'Internal server Error' })
     }
 }

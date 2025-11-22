@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import { Group } from "../types";
-import { readDB, writeDB } from "../data";
+import { readDB, writeDB } from '@data/index';
 
 // Yeni qrup yarat
 export async function addGroup(name: string, members: string[]): Promise<Group> {

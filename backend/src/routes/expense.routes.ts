@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createExpense, deleteExpense, getExpenseId, getListExpenseInGroup } from "../controllers/expense.controller";
+import { createExpense, deleteExpense, getExpenseId, getListExpenseInGroup } from "@controllers/expense.controller";
 
 const expenseRoute = Router()
 

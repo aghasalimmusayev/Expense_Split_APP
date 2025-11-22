@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import type { Settlement } from '../types/all.type';
-import { readDB, writeDB } from '../data';
+import { readDB, writeDB } from '@data/index';
 
 type CreateSettlementInput = Omit<Settlement, 'id' | 'createdAt'>;
 

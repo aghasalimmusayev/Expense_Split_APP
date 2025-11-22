@@ -2,10 +2,22 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ES2022",
-    "lib": ["ES2022"],
     "moduleResolution": "node",
+    "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@controllers/*": ["controllers/*"],
+      "@data/*": ["data/*"],
+      "@middlewares/*": ["middlewares/*"],
+      "@reports/*": ["reports/*"],
+      "@routes/*": ["routes/*"],
+      "@storage/*": ["storage/*"],
+      "@types/*": ["types/*"],
+      "@validators/*": ["validators/*"],
+      "@utils/*": ["utils/*"]
+    },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -13,5 +25,5 @@
     "resolveJsonModule": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }

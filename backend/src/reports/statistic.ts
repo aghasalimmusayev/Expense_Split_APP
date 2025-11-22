@@ -1,5 +1,5 @@
 import { readDB } from "../data";
-import { calculateGroupBalances } from "../storage/balances";
+import { calculateGroupBalances } from "@storage/balances";
 
 export async function calculateStats(groupId: string) {
     const db = await readDB()

@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import type { Expense, CreateExpenseInput } from '../types/all.type';
-import { readDB, writeDB } from '../data';
+import { readDB, writeDB } from '@data/index';
 
 // Yeni xərc əlavə et
 export async function addExpense(input: CreateExpenseInput): Promise<Expense> {

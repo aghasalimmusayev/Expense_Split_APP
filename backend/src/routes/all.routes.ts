@@ -1,0 +1,14 @@
+import { Router } from "express";
+import groupRoute from "@routes/group.routes";
+import expenseRoute from "@routes/expense.routes";
+import settlementRoute from "@routes/settlement.routes";
+import staticRoute from "@routes/static.route";
+
+const router = Router()
+
+router.use(groupRoute);
+router.use(expenseRoute);
+router.use(settlementRoute);
+router.use(staticRoute);
+
+export default router

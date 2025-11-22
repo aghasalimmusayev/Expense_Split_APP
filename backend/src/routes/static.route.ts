@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getStatics } from "../controllers/static.controller";
+import { getStatics } from "@controllers/static.controller";
 
 const staticRoute = Router()
 
