@@ -19,13 +19,13 @@ app.use(express.urlencoded({ extended: true }))
 app.use(httpLogger)
 
 // Serve static frontend files
-// app.use(express.static(path.join(__dirname, '../../frontend')));
+app.use(express.static(path.join(__dirname, '../../frontend')));
 
 app.use('/api', router);
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../../frontend/index.html'));
-// });
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../frontend/index.html'));
+});
 
 app.use(notFound)
 app.use(errorHandler)

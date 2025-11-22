@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
-import { addExpense, getExpenseById, listExpensesByGroupId, listExpensesForUserInGroup, removeExpense } from "@storage/expenses.js";
-import { CreateExpenseSchema } from "@validators/expense.validator.js";
+import { addExpense, getExpenseById, listExpensesByGroupId, listExpensesForUserInGroup, removeExpense, updateExpenseById } from "@storage/expenses.js";
+import { CreateExpenseSchema, UpdatedExpenseSchema } from "@validators/expense.validator.js";
 
 export async function createExpense(req: Request, res: Response) {
     try {
@@ -45,6 +45,22 @@ export async function getListExpenseInGroup(req: Request, res: Response) {
     catch (err) {
         req.log.error({ err }, 'GetExpenseByGroupId Error');
         return res.status(500).json({ message: 'Internal server Error' })
+    }
+}
+
+export async function updateExpense(req: Request, res: Response) {
+    try {
+        const { id } = req.params;
+        const data = UpdatedExpenseSchema.parse(req.body);
+        const updated = await updateExpenseById(id, data);
+        if (!updated) return res.status(404).json({ message: "Expense not found" });
+        return res.status(200).json(updated);
+    } catch (err) {
+        if (err instanceof ZodError) {
+            return res.status(400).json({ message: "Validation Error", errors: err.errors });
+        }
+        req.log.error({ err }, "updateExpense error");
+        return res.status(500).json({ message: "Internal server error" });
     }
 }
 

@@ -34,6 +34,16 @@ export async function listExpensesForUserInGroup(groupId: string, userId: string
     return db.expenses.filter(e => e.groupId === groupId && e.paidBy === userId);
 }
 
+// Group-daki xerci deyis
+export async function updateExpenseById(id: string, patch: Partial<Expense>) {
+    const db = await readDB();
+    const idx = db.expenses.findIndex(e => e.id === id);
+    if (idx === -1) return null;
+    db.expenses[idx] = { ...db.expenses[idx], ...patch, createdAt: new Date().toISOString() };
+    await writeDB(db);
+    return db.expenses[idx];
+}
+
 // Xərc sil
 export async function removeExpense(id: string): Promise<boolean> {
     const db = await readDB()

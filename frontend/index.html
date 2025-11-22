@@ -1,15 +1,288 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="az">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Splitter</title>
+    <link rel="stylesheet" href="./style.css" />
 </head>
+
 <body>
-    <div class="container">
-        <h1>App</h1>
+    <header class="app-header">
+        <h1>Expense Splitter</h1>
+        <p class="muted">Qruplar, xərclər və hesablaşmalar</p>
+    </header>
+
+    <div class="app-layout">
+        <!-- Groups panel -->
+        <aside class="panel groups-panel">
+            <div class="panel-header">
+                <h2>Qruplar</h2>
+            </div>
+
+            <form id="group-form" class="card form">
+                <label>
+                    Qrup adı
+                    <input id="group-name" type="text" placeholder="Məs: Ev xərcləri" required>
+                </label>
+
+                <label>
+                    Üzvlər (vergüllə ayır)
+                    <input id="group-members" type="text" placeholder="Məs: Aga, Ayten, Leyla" required>
+                </label>
+
+                <button type="submit" class="btn primary">Qrup yarat</button>
+                <div id="group-form-error" class="form-error"></div>
+            </form>
+
+            <div id="groups-list" class="list"></div>
+        </aside>
+
+        <!-- Main panel -->
+        <main class="panel main-panel">
+            <div id="empty-state" class="empty-state">
+                <h2>Başlamaq üçün bir qrup seç</h2>
+                <p class="muted">Sol tərəfdən qrup seçəndə xərclər və statistikalar yüklənəcək.</p>
+            </div>
+
+            <section id="group-view" class="hidden">
+                <div class="group-top card">
+                    <div class="group-info">
+                        <h2 id="group-title"></h2>
+                        <div id="group-members-chips" class="chips"></div>
+                    </div>
+
+                    <div class="actions">
+                        <button id="edit-group-btn" class="btn">Düzəliş et</button>
+                        <button id="delete-group-btn" class="btn danger">Qrupu sil</button>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <nav class="tabs">
+                    <button class="tab active" data-tab="expenses">Xərclər</button>
+                    <button class="tab" data-tab="settlements">Hesablaşmalar</button>
+                    <button class="tab" data-tab="stats">Statistika</button>
+                </nav>
+
+                <!-- Expenses tab -->
+                <section id="tab-expenses" class="tab-panel">
+                    <div class="grid-2">
+                        <form id="expense-form" class="card form">
+                            <h3>Xərc əlavə et</h3>
+
+                            <label>
+                                Təsvir
+                                <input id="expense-desc" type="text" placeholder="Məs: Market" required>
+                            </label>
+
+                            <label>
+                                Məbləğ
+                                <input id="expense-amount" type="number" step="0.01" min="0" placeholder="0" required>
+                            </label>
+
+                            <label>
+                                Kim ödəyib?
+                                <select id="expense-paidby" required></select>
+                            </label>
+
+                            <fieldset class="fieldset">
+                                <legend>Kimlər arasında bölünsün?</legend>
+                                <div id="expense-splitbetween" class="checkbox-grid"></div>
+                            </fieldset>
+
+                            <label>
+                                Kateqoriya
+                                <input id="expense-category" type="text" placeholder="Məs: Food, Transport" required>
+                            </label>
+
+                            <button type="submit" class="btn primary">Əlavə et</button>
+                            <div id="expense-form-error" class="form-error"></div>
+                        </form>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Qrup xərcləri</h3>
+                                <span id="expenses-count" class="pill">0</span>
+                            </div>
+
+                            <div id="expenses-list" class="list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settlements tab -->
+                <section id="tab-settlements" class="tab-panel hidden">
+                    <div class="grid-2">
+                        <form id="settlement-form" class="card form">
+                            <h3>Hesablaşma əlavə et</h3>
+
+                            <label>
+                                Kim ödəyir? (fromUser)
+                                <select id="settlement-from" required></select>
+                            </label>
+
+                            <label>
+                                Kimə ödəyir? (toUser)
+                                <select id="settlement-to" required></select>
+                            </label>
+
+                            <label>
+                                Məbləğ
+                                <input id="settlement-amount" type="number" step="0.01" min="0" required>
+                            </label>
+
+                            <button type="submit" class="btn primary">Əlavə et</button>
+                            <div id="settlement-form-error" class="form-error"></div>
+                        </form>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Hesablaşmalar</h3>
+                                <span id="settlements-count" class="pill">0</span>
+                            </div>
+
+                            <div id="settlements-list" class="list"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats tab -->
+                <section id="tab-stats" class="tab-panel hidden">
+                    <div class="grid-2">
+                        <div class="card">
+                            <h3>Ümumi xərclər</h3>
+                            <div id="stats-total" class="big-number">0</div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Ən çox xərcləyən</h3>
+                            <div id="stats-mostsp" class="big-number">—</div>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="card">
+                            <h3>Hər üzv nə qədər ödəyib</h3>
+                            <div id="stats-paidperuser" class="list"></div>
+                        </div>
+
+                        <div class="card">
+                            <h3>Balanslar (netBalance)</h3>
+                            <div id="stats-balances" class="list"></div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
     </div>
-    <script src="app.js"></script>
+
+    <footer class="app-footer muted">
+        Expense Splitter — vanilla UI
+    </footer>
+
+    <!-- ===== Modals ===== -->
+
+    <!-- Group Edit Modal -->
+    <div id="modal-group" class="modal hidden">
+        <div class="modal-backdrop" data-close="modal-group"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Qrupu düzəliş et</h3>
+                <button class="btn" data-close="modal-group">Bağla</button>
+            </div>
+
+            <form id="group-edit-form" class="form">
+                <label>
+                    Qrup adı
+                    <input id="group-edit-name" type="text" required>
+                </label>
+
+                <label>
+                    Üzvlər (vergüllə ayır)
+                    <input id="group-edit-members" type="text" required>
+                </label>
+
+                <button type="submit" class="btn primary">Yadda saxla</button>
+                <div id="group-edit-error" class="form-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Expense Edit Modal -->
+    <div id="modal-expense" class="modal hidden">
+        <div class="modal-backdrop" data-close="modal-expense"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Xərci düzəliş et</h3>
+                <button class="btn" data-close="modal-expense">Bağla</button>
+            </div>
+
+            <form id="expense-edit-form" class="form">
+                <label>
+                    Təsvir
+                    <input id="expense-edit-desc" type="text" required>
+                </label>
+
+                <label>
+                    Məbləğ
+                    <input id="expense-edit-amount" type="number" step="0.01" min="0" required>
+                </label>
+
+                <label>
+                    Kim ödəyib?
+                    <select id="expense-edit-paidby" required></select>
+                </label>
+
+                <fieldset class="fieldset">
+                    <legend>Kimlər arasında bölünsün?</legend>
+                    <div id="expense-edit-splitbetween" class="checkbox-grid"></div>
+                </fieldset>
+
+                <label>
+                    Kateqoriya
+                    <input id="expense-edit-category" type="text" required>
+                </label>
+
+                <button type="submit" class="btn primary">Yadda saxla</button>
+                <div id="expense-edit-error" class="form-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Settlement Edit Modal -->
+    <div id="modal-settlement" class="modal hidden">
+        <div class="modal-backdrop" data-close="modal-settlement"></div>
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Hesablaşmanı düzəliş et</h3>
+                <button class="btn" data-close="modal-settlement">Bağla</button>
+            </div>
+
+            <form id="settlement-edit-form" class="form">
+                <label>
+                    Kim ödəyir? (fromUser)
+                    <select id="settlement-edit-from" required></select>
+                </label>
+
+                <label>
+                    Kimə ödəyir? (toUser)
+                    <select id="settlement-edit-to" required></select>
+                </label>
+
+                <label>
+                    Məbləğ
+                    <input id="settlement-edit-amount" type="number" step="0.01" min="0" required>
+                </label>
+
+                <button type="submit" class="btn primary">Yadda saxla</button>
+                <div id="settlement-edit-error" class="form-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="./app.js"></script>
 </body>
+
 </html>
