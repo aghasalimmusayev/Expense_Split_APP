@@ -1,11 +1,10 @@
 {
   "name": "expense-splitter-api",
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
-    "start": "node -r tsconfig-paths/register dist/server.js"
+    "build": "tsc && tsc-alias",
+    "start": "node dist/server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
